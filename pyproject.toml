@@ -10,9 +10,9 @@ authors = [
   { name="Kekoa Wong", email="me@kekoawong.com" },
 ]
 dependencies = [
-  "networkx==3.3",
-  "numpy==2.0.0",
-  "matplotlib==3.9.2"
+  "networkx>=3.3,<4.0",
+  "numpy>=2.0.0,<3.0",
+  "matplotlib>=3.9.2,<4.0"
 ]
 description = "Emergent's Python module."
 readme = "README.md"
