@@ -13,37 +13,101 @@ Thank you for considering contributing to the **Emergent** project! We value you
 
 ## **Getting Started**
 
-1. **Fork the Repository**: Start by forking the repository to your GitHub account [here](https://github.com/delphictech/emergent/fork).
-2. **Clone the Repository**: Clone your forked repository to your local machine:
+### **1. Fork and Clone**
+
+1. Fork the repository to your GitHub account: [Fork emergent](https://github.com/delphilos/emergent/fork)
+2. Clone your fork locally:
    ```bash
    git clone https://github.com/<your-username>/emergent.git
+   cd emergent
    ```
-3. **Install Dependencies**: Install the required dependencies in a virtual environment:
+3. Add the upstream repository as a remote:
    ```bash
-   pip install -r requirements.txt
+   git remote add upstream https://github.com/delphilos/emergent.git
    ```
+
+### **2. Setup Development Environment**
+
+**Using Dev Container (Recommended)**
+
+This project includes a dev container for a consistent development environment.
+
+1. Install Docker and VS Code/Cursor with the Dev Containers extension ([setup guide](https://code.visualstudio.com/docs/devcontainers/containers#_installation))
+2. Open the project in your editor
+3. When prompted, click "Reopen in Container"
+4. All dependencies will be installed automatically
+
+**Local Setup (Without Container)**
+
+```bash
+pip install -e .
+pip install -r requirements.txt
+```
+
 ---
 
 ## **Code Contributions**
 
-1. Create a new branch for your work:
-   ```bash
-   git checkout -b <your-github-username>/<your-feature-name>
-   ```
-2. Write clean, modular code. Use meaningful variable and function names.
-    It may be useful to review [PEP 8](https://pep8.org/) guidelines for writing Python code.
-3. Commit your changes. Write clear, concise commit messages, such as:
-     ```bash
-     git commit -m "Add feature: Implemented XYZ"
-     ```
-2. **Push Your Branch**:
+### **1. Create a Branch**
+
+Create a new branch for your work:
+```bash
+git checkout -b <your-github-username>/<your-feature-name>
+```
+
+### **2. Make Your Changes**
+
+- Write clean, modular code with meaningful variable and function names
+- Follow [PEP 8](https://pep8.org/) guidelines for Python code style
+- Add tests for new functionality when appropriate
+
+### **3. Commit Your Changes**
+
+We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for clear and consistent commit messages.
+
+**Format**: `<type>: <description>`
+
+**Common types**:
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
+
+**Examples**:
+```bash
+git commit -m "feat: add graph visualization function"
+git commit -m "fix: correct agent parameter validation"
+git commit -m "docs: update installation instructions"
+```
+
+### **4. Push and Create Pull Request**
+
+1. Push your branch to your fork:
    ```bash
    git push origin <your-github-username>/<your-feature-name>
    ```
-3. **Open a Pull Request**:
-   - Go to the original repository on GitHub.
-   - Open a pull request (PR) from your branch [here](https://github.com/delphictech/emergent/compare). If you forked the repo, you will need to select the **compare across forks** option. 
-   - Provide a detailed description of the changes and their purpose. We may provide feedback or request changes before merging.
+
+2. Open a pull request:
+   - Go to [github.com/delphilos/emergent](https://github.com/delphilos/emergent)
+   - Click "Pull requests" → "New pull request"
+   - Click "compare across forks" and select your fork and branch
+   - Provide a detailed description of your changes
+   - Link any related issues
+
+3. Address feedback from maintainers and update your PR as needed
+
+### **5. Keep Your Fork Updated**
+
+Sync your fork with the upstream repository regularly:
+```bash
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main
+```
+
 ---
 
 ## **Documentation**
