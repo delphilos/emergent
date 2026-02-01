@@ -65,7 +65,7 @@ git checkout -b <your-github-username>/<your-feature-name>
 
 We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for clear and consistent commit messages.
 
-**Format**: `<type>: <description>`
+**Format**: `type(optional-scope): description`
 
 **Common types**:
 - `feat:` - New feature
@@ -74,12 +74,22 @@ We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) fo
 - `refactor:` - Code refactoring
 - `test:` - Adding or updating tests
 - `chore:` - Maintenance tasks
+- `build:` - Build system or dependency changes
+- `ci:` - CI/CD configuration changes
+
+**Scope** (optional): Use parentheses to specify the area of change (e.g., `api`, `cli`, `deps`, `agents`).
 
 **Examples**:
 ```bash
+# Without scope
 git commit -m "feat: add graph visualization function"
 git commit -m "fix: correct agent parameter validation"
 git commit -m "docs: update installation instructions"
+
+# With scope
+git commit -m "feat(agents): add support for custom behavior functions"
+git commit -m "fix(cli): resolve argument parsing error"
+git commit -m "chore(deps): update numpy to 2.4.1"
 ```
 
 ### **4. Push and Create Pull Request**
