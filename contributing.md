@@ -30,19 +30,36 @@ Thank you for considering contributing to the **Emergent** project! We value you
 
 **Local Setup (Without Container)**
 
-```bash
-pip install -e .
-pip install -r requirements.txt
-```
+This project uses [uv](https://docs.astral.sh/uv/) for fast, reliable dependency management.
+
+1. Install uv:
+   ```bash
+   # macOS/Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+   # Or use Homebrew
+   brew install uv
+   ```
+
+2. Install dependencies (including dev tools):
+   ```bash
+   # Install all dependencies including dev tools
+   uv sync --extra dev
+
+   # Or install only core dependencies
+   uv sync
+   ```
 
 **Using Dev Container**
 
-This project includes a dev container for a consistent development environment.
+This project includes a dev container for a consistent development environment with uv pre-installed.
 
 1. Install Docker and VS Code/Cursor with the Dev Containers extension ([setup guide](https://code.visualstudio.com/docs/devcontainers/containers#_installation))
 2. Open the project in your editor
 3. When prompted, click "Reopen in Container"
-4. All dependencies will be installed automatically
+4. All dependencies (including uv and dev tools) will be installed automatically
+
+**Optional**: To install Claude Code CLI in the devcontainer, set `"INSTALL_CLAUDE_CODE": "true"` in the `remoteEnv` section of `.devcontainer/devcontainer.json`
 
 ---
 
