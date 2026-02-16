@@ -9,7 +9,6 @@
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "remoteEnv": {
     "PATH": "${containerEnv:HOME}/.local/bin:${containerEnv:PATH}",
-    "INSTALL_CLAUDE_CODE": "false"
   },
   "customizations": {
     "vscode": {

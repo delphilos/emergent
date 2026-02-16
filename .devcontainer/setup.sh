@@ -12,13 +12,9 @@ export PATH="$HOME/.local/bin:$PATH"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc 2>/dev/null || true
 
-# Install Claude Code CLI (optional - set INSTALL_CLAUDE_CODE=true to enable)
-if [ "${INSTALL_CLAUDE_CODE:-false}" = "true" ]; then
-  echo "🤖 Installing Claude Code..."
-  npm install -g @anthropic-ai/claude-code
-else
-  echo "⏭️  Skipping Claude Code installation (set INSTALL_CLAUDE_CODE=true to install)"
-fi
+# Install Claude Code CLI 
+echo "🤖 Installing Claude Code..."
+npm install -g @anthropic-ai/claude-code
 
 # Install project dependencies with uv (including dev dependencies)
 echo "📚 Installing project dependencies..."
