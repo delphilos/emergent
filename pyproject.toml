@@ -7,7 +7,7 @@ name = "emergent"
 version = "0.0.5"
 authors = [
   { name="Oluwatoni Akintola", email="oakintol@nd.edu" },
-  { name="Kekoa Wong", email="me@kekoawong.com" },
+  { name="Kekoa Wong", email="contact@kekoawong.com" },
 ]
 dependencies = [
   "networkx>=3.3,<4.0",
