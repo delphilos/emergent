@@ -23,6 +23,16 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+dev = [
+  "black>=24.4.2",
+  "build>=1.2.0",
+  "twine>=5.1.0",
+  "ipykernel>=6.29.5",
+  "ipython>=8.26.0",
+  "jupyter-client>=8.6.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/delphictech/emergent"
 Website = "https://emergent.community/"
