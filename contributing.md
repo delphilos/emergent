@@ -28,7 +28,14 @@ Thank you for considering contributing to the **Emergent** project! We value you
 
 ### **2. Setup Development Environment**
 
-**Using Dev Container (Recommended)**
+**Local Setup (Without Container)**
+
+```bash
+pip install -e .
+pip install -r requirements.txt
+```
+
+**Using Dev Container**
 
 This project includes a dev container for a consistent development environment.
 
@@ -36,13 +43,6 @@ This project includes a dev container for a consistent development environment.
 2. Open the project in your editor
 3. When prompted, click "Reopen in Container"
 4. All dependencies will be installed automatically
-
-**Local Setup (Without Container)**
-
-```bash
-pip install -e .
-pip install -r requirements.txt
-```
 
 ---
 
