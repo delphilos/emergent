@@ -7,12 +7,12 @@ name = "emergent"
 version = "0.0.5"
 authors = [
   { name="Oluwatoni Akintola", email="oakintol@nd.edu" },
-  { name="Kekoa Wong", email="me@kekoawong.com" },
+  { name="Kekoa Wong", email="contact@kekoawong.com" },
 ]
 dependencies = [
-  "networkx==3.3",
-  "numpy==2.0.0",
-  "matplotlib==3.9.2"
+  "networkx>=3.3,<4.0",
+  "numpy>=2.0.0,<3.0",
+  "matplotlib>=3.9.2,<4.0"
 ]
 description = "Emergent's Python module."
 readme = "README.md"
@@ -21,6 +21,16 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black>=24.4.2",
+  "build>=1.2.0",
+  "twine>=5.1.0",
+  "ipykernel>=6.29.5",
+  "ipython>=8.26.0",
+  "jupyter-client>=8.6.0",
 ]
 
 [project.urls]
