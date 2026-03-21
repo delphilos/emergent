@@ -34,7 +34,7 @@ cd "$REPO_ROOT"
 # ── Load .env / .env.local (existing env vars take precedence) ────────────────
 _load_env_file() {
   local file="$1"
-  [[ -f "$file" ]] || return
+  [[ -f "$file" ]] || return 0
   while IFS= read -r line || [[ -n "$line" ]]; do
     [[ "$line" =~ ^[[:space:]]*# ]] && continue       # skip comments
     [[ -z "${line//[[:space:]]/}" ]] && continue      # skip blank lines
