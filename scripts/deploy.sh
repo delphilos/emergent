@@ -91,13 +91,25 @@ echo ""
 if $TEST_PYPI; then
   info "Publishing to TestPyPI…"
   : "${TEST_PYPI_TOKEN:?TEST_PYPI_TOKEN env var must be set for --test publishes}"
-  uv publish \
+  if ! uv publish \
     --publish-url https://test.pypi.org/legacy/ \
-    --token "$TEST_PYPI_TOKEN"
+    --token "$TEST_PYPI_TOKEN"; then
+    error "Publish to TestPyPI failed for version $VERSION.
+  Common causes:
+    - Version $VERSION already exists on TestPyPI (bump version in pyproject.toml)
+    - Invalid or expired TEST_PYPI_TOKEN
+  Check: https://test.pypi.org/project/emergent/$VERSION/"
+  fi
   info "Done! Verify at: https://test.pypi.org/project/emergent/$VERSION/"
 else
   info "Publishing to PyPI…"
   : "${PYPI_TOKEN:?PYPI_TOKEN env var must be set. Create one at https://pypi.org/manage/account/token/}"
-  uv publish --token "$PYPI_TOKEN"
+  if ! uv publish --token "$PYPI_TOKEN"; then
+    error "Publish to PyPI failed for version $VERSION.
+  Common causes:
+    - Version $VERSION already exists on PyPI (bump version in pyproject.toml)
+    - Invalid or expired PYPI_TOKEN
+  Check: https://pypi.org/project/emergent/$VERSION/"
+  fi
   info "Done! View at: https://pypi.org/project/emergent/$VERSION/"
 fi
