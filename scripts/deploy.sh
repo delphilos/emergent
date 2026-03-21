@@ -68,12 +68,7 @@ if [[ -n "$(git status --porcelain)" ]]; then
 fi
 
 # ── Read current version from pyproject.toml ─────────────────────────────────
-VERSION=$(python3 - <<'EOF'
-import tomllib, pathlib
-data = tomllib.loads(pathlib.Path("pyproject.toml").read_text())
-print(data["project"]["version"])
-EOF
-)
+VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/.*= *"\(.*\)"/\1/')
 info "Building version: $VERSION"
 
 # ── Clean previous dist artefacts ────────────────────────────────────────────
