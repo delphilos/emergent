@@ -3,11 +3,23 @@
   "theme": "mint",
   "name": "Emergent",
   "colors": {
-    "primary": "#16a34a",
-    "light": "#4ade80",
-    "dark": "#15803d"
+    "primary": "#00d4aa",
+    "light": "#33ddb8",
+    "dark": "#00bf99"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "font": {
+    "headings": {
+      "family": "Space Grotesk"
+    },
+    "body": {
+      "family": "Inter"
+    }
+  },
   "navigation": {
     "tabs": [
       {

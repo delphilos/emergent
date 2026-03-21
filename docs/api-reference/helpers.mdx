@@ -1,0 +1,70 @@
+---
+title: Helper Functions
+description: Utility functions included with Emergent for building simulations quickly.
+---
+
+These top-level functions are included as reference implementations and starting points. They are not required — you can always write your own initial data and timestep functions.
+
+```python
+from emergent.main import genInitialData, genTimestepData
+```
+
+---
+
+## `genInitialData(model)`
+
+Generates initial data for a single node. Returns a dictionary with a random integer `id` between 1 and 100.
+
+**Args:**
+- `model` (`AgentModel`) — The model instance.
+
+**Returns:** `dict`
+
+```python
+{"id": <random int 1–100>}
+```
+
+**Example:**
+
+```python
+from emergent import AgentModel
+from emergent.main import genInitialData
+
+model = AgentModel()
+model.set_initial_data_function(genInitialData)
+```
+
+---
+
+## `genTimestepData(model, nodeData)`
+
+Generates updated data for a single node by incrementing its `id` by 1.
+
+**Args:**
+- `model` (`AgentModel`) — The model instance.
+- `nodeData` (`dict`) — The node's current data dictionary.
+
+**Returns:** `dict` — The same `nodeData` dict with `id` incremented.
+
+```python
+# Before: {"id": 42}
+# After:  {"id": 43}
+```
+
+<Note>
+  `genTimestepData` is a **per-node** function. To use it in a simulation, wrap it in a timestep function that iterates over the graph's nodes.
+</Note>
+
+**Example:**
+
+```python
+from emergent.main import genTimestepData
+
+def my_timestep(model):
+    graph = model.get_graph()
+    for node in graph.nodes():
+        updated = genTimestepData(model, graph.nodes[node])
+        graph.nodes[node].update(updated)
+
+model.set_timestep_function(my_timestep)
+```

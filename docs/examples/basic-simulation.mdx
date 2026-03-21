@@ -1,0 +1,124 @@
+---
+title: Opinion Dynamics
+description: A complete example simulating how agents converge on a shared opinion through repeated neighbor interactions.
+---
+
+## Overview
+
+This example models **opinion dynamics** — a classic ABM scenario where each agent holds a real-valued opinion and gradually shifts toward the average opinion of its neighbors. Over time, agents converge toward consensus.
+
+It demonstrates:
+- Setting up parameters and a custom graph
+- Writing initial data and timestep functions
+- Running to convergence
+- Reading final state
+
+## The simulation
+
+```python
+import random
+import networkx as nx
+from emergent import AgentModel
+
+# ── 1. Define agent behavior ──────────────────────────────────────────────────
+
+def initial_data(model):
+    """Each agent starts with a random opinion in [0, 1]."""
+    return {"opinion": random.uniform(0, 1)}
+
+
+def timestep(model):
+    """
+    Each agent moves its opinion halfway toward the average
+    opinion of its immediate neighbors.
+    """
+    graph = model.get_graph()
+    updates = {}
+
+    for node in graph.nodes():
+        neighbors = list(graph.neighbors(node))
+        if not neighbors:
+            continue
+        neighbor_avg = sum(graph.nodes[n]["opinion"] for n in neighbors) / len(neighbors)
+        current = graph.nodes[node]["opinion"]
+        updates[node] = (current + neighbor_avg) / 2
+
+    # Apply updates after the full graph has been read (synchronous update)
+    for node, new_opinion in updates.items():
+        graph.nodes[node]["opinion"] = new_opinion
+
+
+# ── 2. Configure the model ────────────────────────────────────────────────────
+
+model = AgentModel()
+model.update_parameters({
+    "num_nodes": 30,
+    "graph_type": "cycle",
+    "convergence_data_key": "opinion",
+    "convergence_std_dev": 0.005,
+})
+model.set_initial_data_function(initial_data)
+model.set_timestep_function(timestep)
+
+# ── 3. Run ────────────────────────────────────────────────────────────────────
+
+model.initialize_graph()
+steps = model.run_to_convergence()
+print(f"Converged after {steps} timesteps")
+
+# ── 4. Inspect results ────────────────────────────────────────────────────────
+
+graph = model.get_graph()
+opinions = [graph.nodes[n]["opinion"] for n in graph.nodes()]
+print(f"Final opinion range: {min(opinions):.4f} – {max(opinions):.4f}")
+print(f"Std dev: {sum((o - sum(opinions)/len(opinions))**2 for o in opinions) / len(opinions) ** 0.5:.6f}")
+```
+
+## What to expect
+
+On a **cycle graph**, information only travels between immediate neighbors, so convergence is slower than on a complete graph. With 30 nodes and a convergence threshold of `0.005`, you should see the simulation settle in a few hundred timesteps with all agents very close to a shared mean opinion.
+
+## Variations to try
+
+<AccordionGroup>
+  <Accordion title="Switch to a complete graph">
+    Change `graph_type` to `"complete"` to see how convergence speed changes when every agent can directly influence every other agent.
+
+    ```python
+    model.update_parameters({"graph_type": "complete"})
+    ```
+  </Accordion>
+
+  <Accordion title="Use a scale-free network">
+    Replace the built-in graph with a Barabási–Albert graph to model opinion dynamics on a social network with hubs.
+
+    ```python
+    G = nx.barabasi_albert_graph(n=30, m=2)
+    model.set_graph(G)
+    ```
+  </Accordion>
+
+  <Accordion title="Add noise to each update">
+    Introduce a small random perturbation at each step to prevent perfect convergence and model real-world uncertainty.
+
+    ```python
+    model.update_parameters({"noise": 0.02})
+
+    def timestep_with_noise(model):
+        graph = model.get_graph()
+        updates = {}
+        for node in graph.nodes():
+            neighbors = list(graph.neighbors(node))
+            if not neighbors:
+                continue
+            avg = sum(graph.nodes[n]["opinion"] for n in neighbors) / len(neighbors)
+            current = graph.nodes[node]["opinion"]
+            noise = random.uniform(-model["noise"], model["noise"])
+            updates[node] = max(0, min(1, (current + avg) / 2 + noise))
+        for node, val in updates.items():
+            graph.nodes[node]["opinion"] = val
+
+    model.set_timestep_function(timestep_with_noise)
+    ```
+  </Accordion>
+</AccordionGroup>
