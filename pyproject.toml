@@ -1,38 +1,58 @@
 [build-system]
-requires = ["hatchling", "matplotlib", "networkx", "numpy"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "emergent"
 version = "0.0.5"
+description = "A flexible Python framework for simulating and analyzing agent-based models on graph structures."
+readme = "README.md"
+requires-python = ">=3.10.7"
+license = { text = "MIT" }
 authors = [
-  { name="Oluwatoni Akintola", email="oakintol@nd.edu" },
-  { name="Kekoa Wong", email="contact@kekoawong.com" },
+  { name = "Delphilos", email = "team@delphilos.com" },
+  { name = "Oluwatoni Akintola", email = "oakintol@nd.edu" },
+  { name = "Kekoa Wong", email = "contact@kekoawong.com" },
+]
+keywords = [
+  "agent-based modeling",
+  "ABM",
+  "simulation",
+  "complex systems",
+  "graph",
+  "network",
+  "emergence",
+  "multi-agent",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
   "networkx>=3.3,<4.0",
   "numpy>=2.0.0,<3.0",
-  "matplotlib>=3.9.2,<4.0"
-]
-description = "Emergent's Python module."
-readme = "README.md"
-requires-python = ">=3.10.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "matplotlib>=3.9.2,<4.0",
 ]
 
 [project.optional-dependencies]
 dev = [
   "black>=24.4.2",
-  "build>=1.2.0",
-  "twine>=5.1.0",
   "ipykernel>=6.29.5",
   "ipython>=8.26.0",
   "jupyter-client>=8.6.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/delphictech/emergent"
-Website = "https://emergent.community/"
+Homepage = "https://emergent.community/"
+Repository = "https://github.com/delphictech/emergent"
+"Bug Tracker" = "https://github.com/delphictech/emergent/issues"
