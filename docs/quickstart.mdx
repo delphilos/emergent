@@ -1,0 +1,148 @@
+---
+title: Quickstart
+description: Build and run your first agent-based simulation with Emergent in under 5 minutes.
+---
+
+## Install Emergent
+
+```bash
+pip install emergent
+```
+
+## Build your first simulation
+
+A simulation in Emergent has four steps:
+
+1. Create an `AgentModel`
+2. Define an **initial data function** — what state does each agent start with?
+3. Define a **timestep function** — how does each agent update?
+4. Run the simulation
+
+### Step 1 — Create the model
+
+```python
+from emergent import AgentModel
+
+model = AgentModel()
+```
+
+By default this creates a model with 3 nodes on a complete graph. You can customize both:
+
+```python
+model.update_parameters({
+    "num_nodes": 10,
+    "graph_type": "cycle",
+})
+```
+
+### Step 2 — Define the initial data function
+
+Each node receives the return value of this function as its starting data. The function receives the model as its only argument.
+
+```python
+import random
+
+def initial_data(model):
+    return {"opinion": random.uniform(0, 1)}
+```
+
+Register it on the model:
+
+```python
+model.set_initial_data_function(initial_data)
+```
+
+### Step 3 — Define the timestep function
+
+This function is called once per timestep and should mutate node data on the graph. Use `model.get_graph()` to access the underlying NetworkX graph.
+
+```python
+import networkx as nx
+
+def timestep(model):
+    graph = model.get_graph()
+    for node in graph.nodes():
+        neighbors = list(graph.neighbors(node))
+        if not neighbors:
+            continue
+        neighbor_opinions = [graph.nodes[n]["opinion"] for n in neighbors]
+        # Move each agent's opinion toward the average of its neighbors
+        avg = sum(neighbor_opinions) / len(neighbor_opinions)
+        graph.nodes[node]["opinion"] = (graph.nodes[node]["opinion"] + avg) / 2
+```
+
+Register it on the model:
+
+```python
+model.set_timestep_function(timestep)
+```
+
+### Step 4 — Run the simulation
+
+**Option A — Run to convergence**
+
+Emergent can automatically stop when a tracked variable stabilizes within a given standard deviation threshold:
+
+```python
+model.update_parameters({
+    "convergence_data_key": "opinion",
+    "convergence_std_dev": 0.01,
+})
+
+model.initialize_graph()
+timestep_count = model.run_to_convergence()
+print(f"Converged after {timestep_count} timesteps")
+```
+
+**Option B — Run a fixed number of steps**
+
+```python
+model.initialize_graph()
+for _ in range(50):
+    model.timestep()
+```
+
+## Complete example
+
+```python
+import random
+import networkx as nx
+from emergent import AgentModel
+
+def initial_data(model):
+    return {"opinion": random.uniform(0, 1)}
+
+def timestep(model):
+    graph = model.get_graph()
+    for node in graph.nodes():
+        neighbors = list(graph.neighbors(node))
+        if not neighbors:
+            continue
+        avg = sum(graph.nodes[n]["opinion"] for n in neighbors) / len(neighbors)
+        graph.nodes[node]["opinion"] = (graph.nodes[node]["opinion"] + avg) / 2
+
+model = AgentModel()
+model.update_parameters({
+    "num_nodes": 20,
+    "graph_type": "complete",
+    "convergence_data_key": "opinion",
+    "convergence_std_dev": 0.01,
+})
+model.set_initial_data_function(initial_data)
+model.set_timestep_function(timestep)
+model.initialize_graph()
+
+steps = model.run_to_convergence()
+print(f"Converged in {steps} steps")
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="AgentModel concepts" icon="cube" href="/concepts/agent-model">
+    Deep dive into parameters, graphs, and convergence.
+  </Card>
+  <Card title="Graph structures" icon="diagram-project" href="/concepts/graph-structures">
+    Choose the right graph topology for your simulation.
+  </Card>
+</CardGroup>

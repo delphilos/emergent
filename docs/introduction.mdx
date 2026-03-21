@@ -1,0 +1,52 @@
+---
+title: Introduction
+description: Emergent is a Python framework for building and simulating agent-based models on graph structures.
+---
+
+## What is Emergent?
+
+**Emergent** is a lightweight, flexible Python framework for agent-based modeling (ABM). It lets you simulate how large-scale behaviors emerge from the local interactions of individual agents connected in a graph network.
+
+Whether you're modeling social dynamics, distributed decision-making, opinion propagation, or any other complex adaptive system, Emergent gives you the primitives to define, run, and analyze your simulation with minimal boilerplate.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Build and run your first simulation in minutes.
+  </Card>
+  <Card title="AgentModel" icon="cube" href="/concepts/agent-model">
+    Learn the core abstraction at the heart of Emergent.
+  </Card>
+  <Card title="Graph Structures" icon="diagram-project" href="/concepts/graph-structures">
+    Understand how agents are connected.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/agent-model">
+    Full reference for all classes and methods.
+  </Card>
+</CardGroup>
+
+## Key concepts
+
+| Concept | Description |
+|---|---|
+| **AgentModel** | The central object that holds your graph, parameters, and simulation logic |
+| **Graph** | A [NetworkX](https://networkx.org/) graph where each node is an agent |
+| **Parameters** | A key-value store controlling model behavior (graph type, node count, convergence thresholds, etc.) |
+| **Initial data function** | A callable that sets each node's starting state |
+| **Timestep function** | A callable that advances the simulation one step |
+| **Convergence** | A built-in mechanism to stop the simulation when a tracked variable stabilizes |
+
+## Installation
+
+```bash
+pip install emergent
+```
+
+Or with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv add emergent
+```
+
+<Note>
+  Emergent requires Python 3.10.7 or higher.
+</Note>
