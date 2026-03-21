@@ -31,6 +31,27 @@ done
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
+# ── Load .env / .env.local (existing env vars take precedence) ────────────────
+_load_env_file() {
+  local file="$1"
+  [[ -f "$file" ]] || return
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue       # skip comments
+    [[ -z "${line//[[:space:]]/}" ]] && continue      # skip blank lines
+    if [[ "$line" =~ ^([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]]; then
+      local varname="${BASH_REMATCH[1]}"
+      local varval="${BASH_REMATCH[2]}"
+      # Strip surrounding single or double quotes
+      [[ "$varval" =~ ^\"(.*)\"$ ]] && varval="${BASH_REMATCH[1]}"
+      [[ "$varval" =~ ^\'(.*)\'$ ]] && varval="${BASH_REMATCH[1]}"
+      # Only set if not already exported in the environment (bash 3.2 compatible)
+      [[ -n "${!varname+x}" ]] || export "$varname=$varval"
+    fi
+  done < "$file"
+}
+_load_env_file "$REPO_ROOT/.env"
+_load_env_file "$REPO_ROOT/.env.local"
+
 # ── Verify uv is available ────────────────────────────────────────────────────
 if ! command -v uv &>/dev/null; then
   error "uv is not installed. Install it with: curl -LsSf https://astral.sh/uv/install.sh | sh"
