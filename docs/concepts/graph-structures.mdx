@@ -1,0 +1,92 @@
+---
+title: Graph Structures
+description: Choose the right network topology for your agent-based simulation.
+---
+
+## Overview
+
+In Emergent, agents live on the nodes of a graph. Edges define which agents can interact. The topology you choose has a major impact on how information, behavior, or state propagates through your simulation.
+
+Emergent ships with three built-in topologies and supports any custom NetworkX graph.
+
+## Built-in topologies
+
+Set `graph_type` in your parameters before calling `initialize_graph()`.
+
+### Complete graph
+
+```python
+model.update_parameters({"graph_type": "complete", "num_nodes": 6})
+```
+
+Every node is connected to every other node. Information spreads in a single hop; convergence tends to be fast. Good baseline for testing your simulation logic before adding realistic network constraints.
+
+### Cycle graph
+
+```python
+model.update_parameters({"graph_type": "cycle", "num_nodes": 6})
+```
+
+Nodes are arranged in a ring — each connected only to its two neighbors. Information diffuses slowly from one end to the other. Useful for modeling locally-coupled systems or studying how long it takes for consensus to propagate.
+
+### Wheel graph
+
+```python
+model.update_parameters({"graph_type": "wheel", "num_nodes": 6})
+```
+
+One central hub node is connected to all other nodes, which also form a cycle among themselves. The hub node acts as a broadcast or aggregation point. Models systems with a central authority or information broker.
+
+## Custom graphs
+
+For real-world or research-grade topologies, provide your own NetworkX graph:
+
+```python
+import networkx as nx
+from emergent import AgentModel
+
+model = AgentModel()
+
+# Scale-free network (Barabási–Albert)
+G = nx.barabasi_albert_graph(n=200, m=3)
+model.set_graph(G)
+
+model.set_initial_data_function(my_initial_data)
+model.initialize_graph()
+```
+
+Any `nx.Graph` (undirected) is accepted. Common choices for ABM research:
+
+| Graph type | NetworkX constructor | Use case |
+|---|---|---|
+| Barabási–Albert | `nx.barabasi_albert_graph(n, m)` | Scale-free / social networks |
+| Erdős–Rényi | `nx.erdos_renyi_graph(n, p)` | Random networks |
+| Watts–Strogatz | `nx.watts_strogatz_graph(n, k, p)` | Small-world networks |
+| Grid | `nx.grid_2d_graph(m, n)` | Spatial / lattice models |
+| Karate club | `nx.karate_club_graph()` | Classic social network dataset |
+
+<Tip>
+  When modeling a real social or organizational network, you can load an edge list or adjacency matrix and construct the graph with `nx.from_edgelist()` or `nx.from_numpy_array()`.
+</Tip>
+
+## Accessing graph data
+
+After initialization, retrieve the graph and inspect or manipulate node data directly:
+
+```python
+graph = model.get_graph()
+
+# Iterate over all nodes and their data
+for node, data in graph.nodes(data=True):
+    print(node, data)
+
+# Access a specific node's data
+print(graph.nodes[0])
+
+# Get neighbors of a node
+neighbors = list(graph.neighbors(0))
+```
+
+<Note>
+  Emergent does not copy the graph when you call `get_graph()`. Mutations you make to the returned graph object are reflected in the model's internal state immediately.
+</Note>

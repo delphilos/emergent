@@ -1,0 +1,149 @@
+---
+title: AgentModel
+description: The central class in Emergent — understand how parameters, graphs, and simulation logic fit together.
+---
+
+## Overview
+
+`AgentModel` is the single object that ties your simulation together. It holds:
+
+- A **parameter store** for controlling model behavior
+- A **NetworkX graph** where each node represents one agent
+- A pluggable **initial data function** and **timestep function**
+- Built-in **convergence detection**
+
+```python
+from emergent import AgentModel
+
+model = AgentModel()
+```
+
+## Parameters
+
+Parameters are stored in an internal key-value dictionary. Four keys are built-in and always present:
+
+| Parameter | Default | Description |
+|---|---|---|
+| `num_nodes` | `3` | Number of agents (nodes) in the graph |
+| `graph_type` | `"complete"` | Graph topology — `"complete"`, `"cycle"`, or `"wheel"` |
+| `convergence_data_key` | `None` | Node data key to monitor for convergence |
+| `convergence_std_dev` | `100` | Std dev threshold below which the model is considered converged |
+
+You can add any additional parameters your simulation needs:
+
+```python
+model.update_parameters({
+    "num_nodes": 50,
+    "graph_type": "cycle",
+    "learning_rate": 0.05,      # custom parameter
+    "noise_factor": 0.1,        # custom parameter
+})
+```
+
+<Warning>
+  The four default parameters (`num_nodes`, `graph_type`, `convergence_data_key`, `convergence_std_dev`) cannot be deleted via `delete_parameters()`. Attempting to do so raises a `KeyError`.
+</Warning>
+
+### Accessing parameters
+
+Use dictionary-style access to read or set individual parameters:
+
+```python
+# Read
+print(model["num_nodes"])       # 50
+print(model["learning_rate"])   # 0.05
+
+# Write
+model["num_nodes"] = 100
+```
+
+Or list all current parameter keys:
+
+```python
+model.list_parameters()
+# ['num_nodes', 'graph_type', 'convergence_data_key', 'convergence_std_dev', 'learning_rate', 'noise_factor']
+```
+
+## The graph
+
+Emergent uses [NetworkX](https://networkx.org/) graphs internally. Each node is an agent; node data is a dictionary you populate via your initial data function and mutate in your timestep function.
+
+### Built-in graph types
+
+Set `graph_type` before calling `initialize_graph()`:
+
+| Value | Topology |
+|---|---|
+| `"complete"` | Every node connected to every other node |
+| `"cycle"` | Each node connected to its two neighbors in a ring |
+| `"wheel"` | One central hub connected to all others; outer nodes form a cycle |
+
+### Custom graphs
+
+You can bypass the built-in types and provide your own NetworkX graph directly:
+
+```python
+import networkx as nx
+
+G = nx.barabasi_albert_graph(n=100, m=2)
+model.set_graph(G)
+```
+
+<Note>
+  When using a custom graph, call `set_graph()` **before** `initialize_graph()`. The `initialize_graph()` call will populate nodes with data using your initial data function but will not recreate the graph topology.
+</Note>
+
+## Simulation functions
+
+### Initial data function
+
+Called once per node during `initialize_graph()`. Returns a dictionary that is merged into the node's data store.
+
+```python
+def my_initial_data(model):
+    return {
+        "belief": random.random(),
+        "confidence": model["default_confidence"],
+    }
+
+model.set_initial_data_function(my_initial_data)
+```
+
+### Timestep function
+
+Called once per call to `timestep()`. Receives the model and should mutate graph node data directly.
+
+```python
+def my_timestep(model):
+    graph = model.get_graph()
+    for node in graph.nodes():
+        # update each agent based on neighbors
+        ...
+
+model.set_timestep_function(my_timestep)
+```
+
+## Convergence
+
+`run_to_convergence()` runs timesteps in a loop and stops when the standard deviation of a tracked node attribute drops to or below `convergence_std_dev`.
+
+```python
+model.update_parameters({
+    "convergence_data_key": "belief",
+    "convergence_std_dev": 0.005,
+})
+
+steps = model.run_to_convergence()
+```
+
+The default max timesteps cap is **100,000**. Change it with:
+
+```python
+model.change_max_timesteps(500)
+```
+
+You can also check convergence manually at any time:
+
+```python
+converged = model.is_converged("belief", std_dev=0.005)
+```

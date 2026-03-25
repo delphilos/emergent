@@ -1,0 +1,245 @@
+---
+title: AgentModel
+description: Complete API reference for the AgentModel class.
+---
+
+```python
+from emergent import AgentModel
+```
+
+## Constructor
+
+### `AgentModel()`
+
+Initializes the model with default parameters and no graph.
+
+```python
+model = AgentModel()
+```
+
+**Default parameters on initialization:**
+
+| Key | Value |
+|---|---|
+| `num_nodes` | `3` |
+| `graph_type` | `"complete"` |
+| `convergence_data_key` | `None` |
+| `convergence_std_dev` | `100` |
+
+---
+
+## Parameters
+
+### `update_parameters(parameters)`
+
+Merges `parameters` into the model's internal parameter store. Adds new keys and overwrites existing ones.
+
+**Args:**
+- `parameters` (`dict`) — Key-value pairs to update.
+
+```python
+model.update_parameters({
+    "num_nodes": 50,
+    "graph_type": "cycle",
+    "learning_rate": 0.1,
+})
+```
+
+---
+
+### `delete_parameters(parameters=None)`
+
+Deletes custom parameter keys. If called with no arguments, resets the parameter store to its defaults.
+
+**Args:**
+- `parameters` (`list`, optional) — List of parameter keys to delete. Defaults to `None`.
+
+**Returns:** `True` on success.
+
+**Raises:** `KeyError` if a key is one of the four default parameters or does not exist.
+
+```python
+# Delete specific custom parameters
+model.delete_parameters(["learning_rate", "noise_factor"])
+
+# Reset everything to defaults
+model.delete_parameters()
+```
+
+---
+
+### `list_parameters()`
+
+Returns a list of all current parameter keys.
+
+**Returns:** `list`
+
+```python
+model.list_parameters()
+# ['num_nodes', 'graph_type', 'convergence_data_key', 'convergence_std_dev']
+```
+
+---
+
+### `model[key]` / `model[key] = value`
+
+Dictionary-style access for reading and setting individual parameters.
+
+```python
+print(model["num_nodes"])    # 3
+model["num_nodes"] = 100
+```
+
+---
+
+## Graph
+
+### `set_graph(graph)`
+
+Replaces the model's internal graph with the provided NetworkX graph.
+
+**Args:**
+- `graph` (`nx.Graph`) — A NetworkX graph object.
+
+**Raises:** `Exception` if the argument is not a NetworkX graph.
+
+```python
+import networkx as nx
+
+G = nx.barabasi_albert_graph(n=100, m=2)
+model.set_graph(G)
+```
+
+---
+
+### `get_graph()`
+
+Returns the model's current NetworkX graph.
+
+**Returns:** `nx.Graph`
+
+```python
+graph = model.get_graph()
+for node, data in graph.nodes(data=True):
+    print(node, data)
+```
+
+<Note>
+  The returned graph is the live internal object — mutations affect the model's state directly.
+</Note>
+
+---
+
+## Simulation setup
+
+### `set_initial_data_function(initial_data_function)`
+
+Registers the function used to generate starting data for each node.
+
+**Args:**
+- `initial_data_function` (`Callable`) — A function `(model) -> dict`.
+
+```python
+def my_init(model):
+    return {"value": random.random()}
+
+model.set_initial_data_function(my_init)
+```
+
+---
+
+### `set_timestep_function(timestep_function)`
+
+Registers the function called each timestep.
+
+**Args:**
+- `timestep_function` (`Callable`) — A function `(model) -> None`.
+
+```python
+def my_step(model):
+    graph = model.get_graph()
+    for node in graph.nodes():
+        ...
+
+model.set_timestep_function(my_step)
+```
+
+---
+
+### `initialize_graph()`
+
+Creates the graph topology (based on `graph_type` and `num_nodes`) and populates every node by calling `initial_data_function`.
+
+**Raises:** `Exception` if `initial_data_function` is not set.
+
+```python
+model.initialize_graph()
+```
+
+<Warning>
+  Call `initialize_graph()` after setting all parameters and your initial data function. If using a custom graph via `set_graph()`, call `set_graph()` first — `initialize_graph()` will populate node data without rebuilding the topology.
+</Warning>
+
+---
+
+## Running the simulation
+
+### `timestep()`
+
+Executes one timestep by calling `timestep_function(model)`.
+
+**Raises:** `Exception` if `timestep_function` is not set.
+
+```python
+for _ in range(100):
+    model.timestep()
+```
+
+---
+
+### `run_to_convergence()`
+
+Repeatedly calls `timestep()` until convergence is detected or `MAX_TIMESTEPS` is reached.
+
+**Returns:** `int` — The timestep at which the model converged.
+
+**Raises:** `Exception` if `convergence_data_key` is not set.
+
+```python
+model.update_parameters({
+    "convergence_data_key": "opinion",
+    "convergence_std_dev": 0.01,
+})
+steps = model.run_to_convergence()
+print(f"Converged after {steps} steps")
+```
+
+---
+
+### `is_converged(data_key, std_dev)`
+
+Checks whether the standard deviation of a node attribute is at or below a threshold.
+
+**Args:**
+- `data_key` (`str`) — Node data key to evaluate.
+- `std_dev` (`float`) — Convergence threshold.
+
+**Returns:** `bool`
+
+```python
+if model.is_converged("opinion", 0.01):
+    print("Reached consensus")
+```
+
+---
+
+### `change_max_timesteps(timesteps)`
+
+Sets the upper bound on iterations for `run_to_convergence()`. Default is `100,000`.
+
+**Args:**
+- `timesteps` (`int`) — New maximum.
+
+```python
+model.change_max_timesteps(500)
+```

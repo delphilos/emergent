@@ -1,0 +1,72 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Emergent",
+  "colors": {
+    "primary": "#00d4aa",
+    "light": "#33ddb8",
+    "dark": "#00bf99"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "font": {
+    "headings": {
+      "family": "Space Grotesk"
+    },
+    "body": {
+      "family": "Inter"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/agent-model",
+              "concepts/graph-structures"
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": ["examples/basic-simulation"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "emergent",
+            "pages": [
+              "api-reference/agent-model",
+              "api-reference/helpers"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/delphilos/emergent"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "PyPI",
+    "url": "https://pypi.org/project/emergent"
+  },
+  "footerSocials": {
+    "github": "https://github.com/delphilos/emergent"
+  }
+}
